@@ -1,61 +1,31 @@
-# This example requires the 'message_content' intent.
-
+import asyncio
+import os
 import discord
 from discord.ext import commands
-from discord_components import DiscordComponents, ComponentsBot, Button
-import pytz
 
-intents = discord.Intents.default()
-intents.members = True
-intents.message_content = True
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix="$", intents=intents)
 
-bot = commands.Bot(command_prefix='$', intents=intents)
-
-
-
-@bot.command(description="Somar dois numeros")
-async def somar(ctx, left: int, right: int):
-    """Adds two numbers together."""
-    await ctx.send(f"A soma dada por {ctx.author} é {left + right}")
-
-@bot.command(description="Somar dois numeros")
-async def contar(ctx, left: int, right: int):
-    """Adds two numbers together."""
-    for i in range(left, right+1):
-        await ctx.send(f"{ctx.author} conta {i}")
-
-ponto = None
-
-class Menu(discord.ui.View):
-    def __init__(self):
-        super().__init__()
-        self.value = None
-
-    @discord.ui.button(label="Parar", style=discord.ButtonStyle.red)
-    async def menu1(self, button: discord.ui.Button, interaction: discord.Interaction):
-        fuso_origem = pytz.utc
-        fuso_br = pytz.timezone('America/Sao_Paulo')
-        time = interaction.created_at.replace(tzinfo=fuso_origem)
-        time = time.astimezone(fuso_br)
-        time = time.strftime("%H:%M - %d/%m/%Y")
-        ponto_final = time
-        await interaction.response.edit_message(content=f"{ponto} \n ponto finalizado as {ponto_final}")
+@bot.event
+async def on_ready():
+    await bot.tree.sync()
+    print(f"{bot.user} se conectou ao discord")
 
 
-
-@bot.command()
-async def ponto(ctx):
-    fuso_origem = pytz.utc
-    fuso_br = pytz.timezone('America/Sao_Paulo')
-    time = ctx.message.created_at.replace(tzinfo=fuso_origem)
-    time = time.astimezone(fuso_br)
-    time = time.strftime("%H:%M - %d/%m/%Y")
-
-    global ponto
-    view = Menu()
-    await ctx.reply(f"Ponto iniciado as {time}", view=view)
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Comando não encontrado.")
 
 
+async def load_cogs():
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cogs.{filename[:-3]}")
 
-bot.run('MTIxODgwMTYyMjAwODk4NzY3OQ.GhwEAi.kFTXSitCNJxCGU0WfF_P917_1zNiqWEpCtdejM')
+async def main():
+    async with bot:
+        await load_cogs()
+        await bot.start("MTIxODgwMTYyMjAwODk4NzY3OQ.GhwEAi.kFTXSitCNJxCGU0WfF_P917_1zNiqWEpCtdejM")
 
+asyncio.run(main())
