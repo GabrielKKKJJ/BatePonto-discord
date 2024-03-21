@@ -3,7 +3,8 @@ import os
 import discord
 from discord.ext import commands
 
-intents = discord.Intents.all()
+
+intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="$", intents=intents)
 
 @bot.event
@@ -26,6 +27,6 @@ async def load_cogs():
 async def main():
     async with bot:
         await load_cogs()
-        await bot.start("MTIxODgwMTYyMjAwODk4NzY3OQ.GhwEAi.kFTXSitCNJxCGU0WfF_P917_1zNiqWEpCtdejM")
+        await bot.start("MTIxODgwMTYyMjAwODk4NzY3OQ.GAYSTI.a10vpK0XwMIvSeSWBRlI9TNXAW5v1xiRGXoPTo")
 
 asyncio.run(main())
