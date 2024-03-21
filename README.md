@@ -60,6 +60,14 @@ https://www.youtube.com/watch?v=TW02hwhBvo4
 * `/relatorio`: Faz um relatorio do tempo dos usuarios.
 * `/cleardb`: Limpa o banco de dados.
 
+**Preview**
+
+![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/7e99876d-ea4e-4f16-8c3e-fb75f1353f0f)
+![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/1b2f74d2-6e2c-4f76-b260-7f060db468a9)
+![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/97bfeeee-865b-4edd-a252-6b04155db73b)
+![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/f0cf6278-b26b-4eb8-a43b-a1ce7f0da788)
+
+
 **Exemplo de uso:**
 Digite:
 ```
