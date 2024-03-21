@@ -5,6 +5,9 @@ from discord import app_commands
 import utils.DateOperations as DateOperations
 import Firebase.DatabaseOperations as DatabaseOperations
 
+# ID do cargo que pode iniciar o ponto
+allowed_role_id = [941815669413007428, 941815669413007426, 941815669413007425, 941815669413007425, 941815669413007424, 941815669413007423, 941815669413007422, 941815669413007421]  # ID do cargo que pode iniciar o ponto
+
 class MenuPonto(View):
     def __init__(self, embed, ponto_ParaCalcular, hourToCalc):
         super().__init__()
@@ -80,6 +83,7 @@ class MenuPonto(View):
 
             await interaction.response.edit_message(embed=self.embed, view=self)
 
+
 class PontoCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -88,6 +92,7 @@ class PontoCog(commands.Cog):
     async def on_ready(self):
         print("Ponto cog carregado")
 
+    @commands.has_any_role(941815669413007428, 941815669413007426, 941815669413007425, 941815669413007424, 941815669413007423, 941815669413007422, 941815669413007421)
     @app_commands.command(description="Inicia o ponto do usuario")
     async def ponto(self, interaction: discord.Interaction):
         date_operations = DateOperations.DateTimeConverter(interaction=interaction)
