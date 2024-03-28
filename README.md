@@ -9,7 +9,7 @@
 5. Execute o seguinte comando:
 
 ```
-git clone https://github.com/<nome-do-usuário>/<nome-do-repositório>.git
+https://github.com/GabrielKKKJJ/Ponto-discord-Bot.git
 ```
 
 **Adapte o código para o seu uso:**
