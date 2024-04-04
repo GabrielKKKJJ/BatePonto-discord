@@ -9,27 +9,43 @@ import Firebase.DatabaseOperations as DatabaseOperations
 allowed_role_id = [941815669413007428, 941815669413007426, 941815669413007425, 941815669413007425, 941815669413007424, 941815669413007423, 941815669413007422, 941815669413007421]  # ID do cargo que pode iniciar o ponto
 
 class MenuPonto(View):
-    def __init__(self, embed, ponto_ParaCalcular, hourToCalc):
-        super().__init__()
+    def __init__(self, embed, Initial_Date, Initial_Hour, timeout=None):
+        super().__init__(timeout=timeout)
         self.value = None
         self.embed = embed
-        self.ponto_ParaCalcular = ponto_ParaCalcular
-        self.hourToCalc = hourToCalc
+        self.Initial_Date = Initial_Date
+        self.Initial_Hour = Initial_Hour
         self.pause_start = None
         self.total_time = 0
+        self.isPause = False
+        self.Pause_hour = None
+        self.Pause_date = None
 
     @button(label="Parar", style=discord.ButtonStyle.red)
     async def menu1(self, interaction, button):
         try:
+            print("Ponto finalizado")
             date_operations = DateOperations.DateTimeConverter(interaction=interaction)
 
             ponto_final = await date_operations.date()
             hour = await date_operations.hours()
 
-            if self.total_time == 0:
-                total_time = await date_operations.dateCalculate(self.ponto_ParaCalcular, self.hourToCalc)
+            if self.isPause:
+                "Paused"
+                if self.total_time == 0:
+                    "Paused and continued"
+                    total_time = await date_operations.dateCalculate(self.Initial_Date, self.Initial_Hour, self.Pause_date, self.Pause_hour)
+                else:
+                    "Paused, continued and paused again"
+                    total_time = await date_operations.dateCalculate(self.Initial_Date, self.Initial_Hour, self.Pause_date, self.Pause_hour, pause_time=self.total_time)
             else:
-                total_time = await date_operations.dateCalculate(self.ponto_ParaCalcular, self.hourToCalc, self.total_time)
+                "Not paused"
+                if self.total_time == 0:
+                    "Not paused"
+                    total_time = await date_operations.dateCalculate(self.Initial_Date, self.Initial_Hour, ponto_final, hour)
+                else:
+                    "Continued"
+                    total_time = await date_operations.dateCalculate(self.Initial_Date, self.Initial_Hour, ponto_final, hour, pause_time=self.total_time)
 
             self.embed.add_field(name=f"Ponto finalizado as:", value=f"`{ponto_final} as {hour}`", inline=False)
             self.embed.add_field(name="Tempo total:", value=f"{total_time['hours']} Horas, {total_time['minutes']} Minutos, {total_time['seconds']}, Segundos", inline=False)
@@ -54,11 +70,15 @@ class MenuPonto(View):
     async def menu2(self, interaction, button):
 
         if(button.label=="Pausar"):
+            self.isPause = True
             self.pause_start = interaction.created_at
             date_operations = DateOperations.DateTimeConverter(interaction=interaction)
             
             ponto_pausa = await date_operations.date()
             hour = await date_operations.hours()
+
+            self.Pause_date = ponto_pausa
+            self.Pause_hour = hour
 
             self.embed.add_field(name=f"Ponto pausado:", value=f"`{ponto_pausa} as {hour}`", inline=False)
             button.style=discord.ButtonStyle.green
@@ -68,6 +88,7 @@ class MenuPonto(View):
 
         elif(button.label=="Continuar"):
 
+            self.isPause = False
             pause_end = interaction.created_at
         
             self.total_time += (pause_end - self.pause_start ).total_seconds()
@@ -95,31 +116,60 @@ class PontoCog(commands.Cog):
     @commands.has_any_role(941815669413007428, 941815669413007426, 941815669413007425, 941815669413007424, 941815669413007423, 941815669413007422, 941815669413007421)
     @app_commands.command(description="Inicia o ponto do usuario")
     async def ponto(self, interaction: discord.Interaction):
-        date_operations = DateOperations.DateTimeConverter(interaction=interaction)
-        ponto_inicial = await date_operations.date()
-        hour = await date_operations.hours()
+        try:
+            channel = self.bot.get_channel(1220114985317826731)
 
-        embed = discord.Embed(title=":file_folder: Bate ponto", color=discord.Color.dark_embed())
-        embed.add_field(name="Usuario", value=f"{interaction.user.mention}", inline=False)
-        embed.add_field(name=f"Ponto iniciado as:", value=f"`{ponto_inicial} as {hour}`")
+            if channel != interaction.channel:
+                return await interaction.response.send_message("Este comando pode ser usado apenas no canal #ponto", ephemeral=True)
+            
+            date_operations = DateOperations.DateTimeConverter(interaction=interaction)
+            Initial_Date = await date_operations.date()
+            Initial_Hour = await date_operations.hours()
 
-        viewPonto = MenuPonto(embed=embed, ponto_ParaCalcular=ponto_inicial, hourToCalc=hour)
-        await interaction.response.send_message(embed=embed, view=viewPonto)
-    
+            embed = discord.Embed(title=":file_folder: Bate ponto", color=discord.Color.dark_embed())
+            embed.add_field(name="Usuario", value=f"{interaction.user.mention}", inline=False)
+            embed.add_field(name=f"Ponto iniciado as:", value=f"`{Initial_Date} as {Initial_Hour}`")
+
+            viewPonto = MenuPonto(embed=embed, Initial_Date=Initial_Date, Initial_Hour=Initial_Hour, timeout=None)
+            await interaction.response.send_message(embed=embed, view=viewPonto)
+
+        except Exception as e:
+            print(e)
     @app_commands.command(description="Faz relatorio de pontos dos Staffs")
     async def relatorio(self, interaction: discord.Interaction):
-        db = DatabaseOperations.DatabaseOperations()
-        relatorio = await db.relatorio()
+        try:
+            channel = self.bot.get_channel(1220114985317826731)
 
-        embed = discord.Embed(title=":file_folder: Relatorio de Ponto",description="A meta de 20 horas semanais",color=discord.Color.dark_embed())
-        for user in relatorio:
-            embed.add_field(name=user["User"], value=f"{user['Hours']} Horas, {user['Minutes']} Minutos, {user['Seconds']} Segundos", inline=False)
+            if channel != interaction.channel:
+                return await interaction.response.send_message("Este comando pode ser usado apenas no canal #ponto", ephemeral=True)
+            
+            db = DatabaseOperations.DatabaseOperations()
+            relatorio = await db.relatorio()
 
-        await interaction.response.send_message(embed=embed)
-    
+            embed = discord.Embed(title=":file_folder: Relatorio de Ponto",description="A meta de 12 horas semanais",color=discord.Color.dark_embed())
+            for user in relatorio:
+                if user['Hours'] >= 12:
+                    embed.add_field(name=f"{user['User']} :green_circle:", value=f"{user['Hours']} Horas, {user['Minutes']} Minutos, {user['Seconds']} Segundos", inline=False)
+                
+                elif user['Hours'] >= 6:
+                    embed.add_field(name=f"{user['User']} :yellow_circle:", value=f"{user['Hours']} Horas, {user['Minutes']} Minutos, {user['Seconds']} Segundos", inline=False)
+                    
+                elif user['Hours'] < 6:
+                    embed.add_field(name=f"{user['User']} :red_circle:", value=f"{user['Hours']} Horas, {user['Minutes']} Minutos, {user['Seconds']} Segundos", inline=False)
+
+            await interaction.response.send_message(embed=embed)
+            
+        except Exception as e:
+            print(e)
+        
     @app_commands.command(description="Limpar banco de dados")
     async def cleardb(self, interaction: discord.Interaction):
         try:
+            channel = self.bot.get_channel(1220114985317826731)
+
+            if channel != interaction.channel:
+                return await interaction.response.send_message("Este comando pode ser usado apenas no canal #ponto", ephemeral=True)
+            
             db = DatabaseOperations.DatabaseOperations()
             await db.cleardb()
             await interaction.response.send_message("Banco de dados limpo")
