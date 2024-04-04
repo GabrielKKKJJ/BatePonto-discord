@@ -45,6 +45,6 @@ async def main():
     """
     async with bot:  # Context manager for proper shutdown
         await load_cogs()  # Load cogs before starting
-        await bot.start("MTIxODgwMTYyMjAwODk4NzY3OQ.Gmayp4.wQ8DiN9IeEwFWa-dZ_-rIgiqjhrSoriJD-Pso4")  # Replace with your bot token
+        await bot.start("TOKEN")  # Replace with your bot token
 
 asyncio.run(main())  # Start the bot
