@@ -3,6 +3,7 @@ import os
 import discord
 from discord.ext import commands
 
+
 # Define intents for bot functionality
 intents = discord.Intents.default()
 
@@ -17,6 +18,7 @@ async def on_ready():
     Syncs application commands and prints a connection message.
     """
     await bot.tree.sync()  # Sync application commands with Discord
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game('Jogando em  jogar.redelufy.com'))
     print(f"{bot.user} se conectou ao discord")
 
 # Event for handling command errors
@@ -28,6 +30,14 @@ async def on_command_error(ctx, error):
     """
     if isinstance(error, commands.CommandNotFound):
         await ctx.send("Comando não encontrado.")
+
+@bot.event
+async def on_error(event, *args, **kwargs):
+    """
+    Handles errors raised during event handling.
+    Prints the error message.
+    """
+    print(f"Error in {event}: {args[0]}")
 
 # Function to load cogs (extensions containing commands)
 async def load_cogs():
@@ -45,6 +55,6 @@ async def main():
     """
     async with bot:  # Context manager for proper shutdown
         await load_cogs()  # Load cogs before starting
-        await bot.start("TOKEN")  # Replace with your bot token
+        await bot.start("YOUR_BOT_TOKEN")  # Replace with your bot token
 
 asyncio.run(main())  # Start the bot

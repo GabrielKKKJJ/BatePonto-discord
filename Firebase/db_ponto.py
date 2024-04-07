@@ -2,21 +2,18 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from utils.DateOperations import DateTimeConverter
-
+from config.db_config import ServerConfig
 class DatabaseOperations:
     """
     Classe para realizar operações no banco de dados Firebase Firestore.
     """
-
     def __init__(self):
         """
         Inicializa a conexão com o banco de dados Firestore.
         """
-        cred = credentials.Certificate("Firebase/discordbot-34f67-firebase-adminsdk-yl0ef-fcdeaa0825.json")
-        firebase_admin.initialize_app(cred)
-        self.db = firestore.client()
+        self.db = ServerConfig().db
 
-    async def register(self, register):
+    async def register(self,server_name, register):
         """
         Registra um novo ponto no banco de dados.
 
@@ -24,16 +21,15 @@ class DatabaseOperations:
             register (dict): Dicionário contendo os dados do registro.
         """
         try:
-            doc_ref = self.db.collection('Pontos').document()
+            doc_ref = self.db.collection(server_name).document('Pontos').collection('registros').document()
             doc_ref.set(register)
 
             print("Document written with ID: ", doc_ref.id)
-            firebase_admin.delete_app(firebase_admin.get_app())
 
         except Exception as e:
             print("Error while registering:", e)
 
-    async def relatorio(self):
+    async def relatorio(self, server_name: str):
         """
         Gera um relatório com os totais de tempo para cada usuário.
 
@@ -45,7 +41,7 @@ class DatabaseOperations:
             list_users = []
             date_converter = DateTimeConverter()
             
-            docs = self.db.collection('Pontos').get() 
+            docs = self.db.collection(server_name).document('Pontos').collection('registros').get() 
             for doc in docs:
                 user_data = doc.to_dict()
                 if 'User' in user_data and 'Hours' in user_data and 'Minutes' in user_data and 'Seconds' in user_data:
@@ -77,24 +73,21 @@ class DatabaseOperations:
 
                 list_users.append(users_totals)
 
-            firebase_admin.delete_app(firebase_admin.get_app())
-
             return list_users
 
         except Exception as e:
             print("Error while generating report:", e)
 
-    async def cleardb(self):
+    async def cleardb(self, server_name: str):
         """
         Limpa todos os documentos da coleção 'Pontos'.
         """
         try:
-            docs = self.db.collection('Pontos').get()
+            docs = self.db.collection(server_name).document('Pontos').collection('registros').get()
             for doc in docs:
                 doc.reference.delete()
             
             print("Documents deleted successfully!")
-            firebase_admin.delete_app(firebase_admin.get_app())
 
         except Exception as e:
             print("Error while clearing the database:", e)
