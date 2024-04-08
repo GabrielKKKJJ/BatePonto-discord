@@ -1,6 +1,6 @@
-## Como usar o Ponto bot
+## Como usar o Ponto bot <img src=https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png width=30>
 
-**Clone o repositório:**
+**Clone o repositório:** 📦
 
 1. Clique no botão verde "Clone or download".
 2. Escolha "Copy HTTPS" para copiar o link do repositório.
@@ -19,60 +19,46 @@ https://github.com/GabrielKKKJJ/Ponto-discord-Bot.git
 ```
 await bot.start("TOKEN")  # Replace with your bot token
 ```
-5. Altere para o token do seu bot.
-   
-**Metodo com relatorios**
-1. Caso queira usar o /relatorio crie uma banco de dados no firebase
+3. Altere para o token do seu bot.
+#
+**CONFIGURANDO** ⚙️
+#
+
+Para conseguir usar o bot é necessario ter um banco de dados no [Firebase](https://firebase.google.com/products/realtime-database?hl=pt)
 ```
 TUTORIAL
 https://www.youtube.com/watch?v=TW02hwhBvo4
 ```
-2. Na hora de criar o documento coloque o nome como Pontos
-3. Apos a criação do banco de dados va na seguinte opção
+Apos a criação do banco de dados va na seguinte opção
 
-![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/850266cc-22d1-42c2-aabf-8196978061da)
+<img src=https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/850266cc-22d1-42c2-aabf-8196978061da width=350>
 
-5. Clique em:
 
-![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/524bf876-461c-4c8b-9aa8-9d47edaa2cb3)
+Clique em:
 
-7. E depois em:
-   
+<img src=https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/524bf876-461c-4c8b-9aa8-9d47edaa2cb3 width=350>
+
+E depois em:
+
 ![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/dc27898d-fe45-4fad-a28a-024c27d752f2)
 
-9. Apos o download do JSON, coloque ele na pasta firebase do repositorio e já podera usa-lo
+Apos o download do JSON, coloque ele na pasta firebase do repositorio e já podera usa-lo
 
-**Metodo sem relatorios**
-1. Comente as seguintes linhas:
-2. Aquivo -> Ponto.py
-3. Linhas 6, 45, 47, 109-118, 120-127
-4. Apague a pasta -> Firebase
-
-**Cargos com permissão para o comando**
-1. Para alterar os cargos com permissão para executar os comandos va em
-2. Arquivo -> Ponto.py
-3. Na linha 9 em allowed_rules
-4. Remova todos os ids dentro dele e adicione o id dos cargos do seu servidor que terão permissão
 
 **Comandos disponíveis:**
-
+* `/config` Configura os canais do Bot
 * `/ponto`: Inicia o ponto de um usuario.
 * `/relatorio`: Faz um relatorio do tempo dos usuarios.
 * `/cleardb`: Limpa o banco de dados.
 
 **Preview**
 
+![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/d7b8bfe2-f88a-4caf-8b93-dd2e6f1c10a9)
 ![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/7e99876d-ea4e-4f16-8c3e-fb75f1353f0f)
 ![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/1b2f74d2-6e2c-4f76-b260-7f060db468a9)
 ![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/97bfeeee-865b-4edd-a252-6b04155db73b)
 ![image](https://github.com/GabrielKKKJJ/Ponto-discord-Bot/assets/123528138/f0cf6278-b26b-4eb8-a43b-a1ce7f0da788)
 
-
-**Exemplo de uso:**
-Digite:
-```
-python3 Main.py
-```
 
 **Observações:**
 
