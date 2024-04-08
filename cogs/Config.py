@@ -1,4 +1,3 @@
-from typing import Any
 import discord
 from discord.ext import commands
 from discord.ui import View, button
@@ -60,6 +59,7 @@ class ConfigSelect(discord.ui.Select):
             permissions_view = PermissionsView()
 
             await interaction.response.edit_message(content="Selecione quem pode usar o bot:", view=permissions_view)
+
 class ChannelView(discord.ui.View):
     def __init__(self, modal = None):
         super().__init__()
@@ -117,7 +117,6 @@ class PermissionsSelect(discord.ui.RoleSelect):
         await server_config.ServerConfig().update_config(server_name=interaction.guild.name, field='permissions', config={'permissions': roles_list})
         await interaction.response.send_message("Permissoes atualizadas")
 
-
 async def get_roles(server_name: str):
     try:
         config = await server_config.read_json(f'config/Servers_configs/{server_name}/config.json')
@@ -151,16 +150,30 @@ class ConfigCog(commands.Cog):
     async def on_ready(self):
         print("Config cog carregado")
 
-    @commands.has_any_role(941815669413007428, 941815669413007426, 941815669413007425, 941815669413007424, 941815669413007423, 941815669413007422, 941815669413007421)
+
     @app_commands.command(description="Configura o bot")
     async def config(self, interaction: discord.Interaction):
         try:
+            if not await self.has_any_role(interaction):
+                return await interaction.response.send_message("Sem permissão", ephemeral=True)
+            
             await server_config.ServerConfig().initialize_config(interaction.guild.name)
             view = ConfigView()
             await interaction.response.send_message(view=view)
             
         except Exception as e:
             print(e)
+    
+    async def has_any_role(self, interaction: discord.Interaction):
+        if interaction.user.guild_permissions.administrator: return True
+
+        user_role_ids = [role.id for role in interaction.user.roles]
+
+        allowed_role_ids = await get_roles(interaction.guild.name)
+
+        has_role = any(role_id in user_role_ids for role_id in allowed_role_ids)
+
+        return has_role
 
 async def setup(bot):
     await bot.add_cog(ConfigCog(bot))

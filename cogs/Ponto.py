@@ -5,7 +5,6 @@ from discord import app_commands
 import utils.DateOperations as DateOperations
 import Firebase.db_ponto as db_ponto
 from cogs.Config import get_channels, get_roles
-from Firebase.firebase_init import init_firebase
 
 class MenuPonto(View):
     def __init__(self, embed, initial_date, initial_hour, timeout=None):

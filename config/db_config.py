@@ -1,7 +1,4 @@
 import json
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
 import os
 from Firebase.firebase_init import init_firebase
 
@@ -73,6 +70,9 @@ class ServerConfig:
             print("Error while getting config:", e)
 
     async def update_config(self,server_name: str, field: str, config: dict):
+        """
+        Upadate the config.json and the DB with the new values
+        """
         try:
             doc_ref = self.db.collection(server_name).document(document_id='config')
             doc_ref.update(config)

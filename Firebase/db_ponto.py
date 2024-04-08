@@ -1,8 +1,6 @@
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
 from utils.DateOperations import DateTimeConverter
 from config.db_config import ServerConfig
+
 class DatabaseOperations:
     """
     Classe para realizar operações no banco de dados Firebase Firestore.

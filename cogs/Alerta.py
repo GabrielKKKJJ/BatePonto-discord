@@ -4,8 +4,6 @@ from discord.ui import View, button
 from discord import app_commands
 from cogs.Config import get_channels, get_roles
 
-
-
 class AlertaCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
